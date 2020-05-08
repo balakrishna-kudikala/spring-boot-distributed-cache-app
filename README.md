@@ -70,12 +70,18 @@ java -jar spring-boot-distributed-cache-app-0.0.1-SNAPSHOT.jar --server.port=900
 java -jar spring-boot-distributed-cache-app-0.0.1-SNAPSHOT.jar --server.port=9003
 ```
 ## Swagger-UI
+
 * After starting the application Click on [Swagger-home](http://localhost:9002/swagger-ui.html)
 * You can do this for all the instances that you have run the application. 
 * I have created database initialization scripts to have default users in the app. You can invoke the /user/all API to know all the users info. Alternatively, you can look into <b>{project.root}/src/main/resources/data.sql</b>
+* GET /user?userID=SM1923 service, is to get a user details for a given ID from database. It gets the user from cache if exists, otherwise gets from DB and updates the cache.
+* POST /user service, it to update the user details in the database. It updates the user details into cache as well.
+* GET /user/all service, is to get all the existing users in the database currently.
+* GET /user/cache-synch, is to get all the users present in cache. It doest refer users in database.
+* POST /user/cache-synch, is to update the cache with the input user details. It doesnt update the user in database.
+
 ## Steps to Test
-* invoke /user?userId=SM1923 in one instance, you will get the User details.  
-* invoke the same api again in the same instance, you will get the response much faster this time as it was serving the cached data of the same user.
-* invoke GET /user/cache-synch in the same instance, you will see that same user is in cache.
-* invoke POST /user/cache-synch in same instance, provide a payload for another user (you can pick it from /user/all API). You will get the success response. i.e. User is added in the cache and published a message to the Oracle AQ Topic. All the other instances listen to the topic and add the user into their cache.
+
+* invoke GET /user/cache-synch in the all the instances, you will see that there are no users in cache.
+* invoke POST /user/cache-synch in any one instance, provide a payload for a user (you can pick it from /user/all API). You will get the success response. i.e. User is added in the cache and published a message to the Oracle AQ Topic. All the other instances listen to the topic and add the user into their cache.
 * invoke GET /user/cache-synch in the any other instance, you will see that previously updated user is in cache in another instance. 
