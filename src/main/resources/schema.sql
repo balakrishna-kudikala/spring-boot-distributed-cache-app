@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+  user_id VARCHAR(100) PRIMARY KEY,
+  user_name VARCHAR(250) NOT NULL,
+  role VARCHAR(250) NOT NULL
+);
